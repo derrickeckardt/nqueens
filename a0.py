@@ -6,6 +6,7 @@
 
 import sys
 from operator import add
+import cProfile
 
 # Count # of pieces in given row
 def count_on_row(board, row):
@@ -150,7 +151,7 @@ if ntype == "nrook":
     print (printable_rooks_board(printable_solution) if solution else "Sorry, no solution found. :(")
     
 elif ntype == "nqueen":
-    solution = solve_queens(initial_board)
+    cProfile.run("solution = solve_queens(initial_board)")
     printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
     print (printable_queens_board(printable_solution) if solution else "Sorry, no solution found. :(")
     
