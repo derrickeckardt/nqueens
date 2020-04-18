@@ -40,6 +40,8 @@ def count_on_els(board,row,col):
 
 # Count total # of pieces on board
 def count_pieces(board):
+    # print(sum(board))
+    # print([ sum(row) for row in board ])
     return sum([ sum(row) for row in board ] )
 
 # Return a string with the board rendered in a human-friendly format
@@ -73,8 +75,25 @@ def successors5(board):
     total_pieces = count_pieces(board)
     if total_pieces < N:
         return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and count_on_diagonals(board,r,total_pieces)==0 and blocked_board[r][total_pieces] != 2]
+        # new_board_counts = [count_pieces(board) for board in new_boards]
+        # print(new_board_counts)
+        # return new_boards
+
     else:
         return[]
+
+# NQueens Successor
+def successors5_alt(board,total_pieces):
+    # total_pieces = count_pieces(board)
+    if total_pieces < N:
+        return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and count_on_diagonals(board,r,total_pieces)==0 and blocked_board[r][total_pieces] != 2]
+        # new_board_counts = [count_pieces(board) for board in new_boards]
+        # print(new_board_counts)
+        # return new_boards
+
+    else:
+        return[]
+
 
 # NKnights Successor
 def successors6(board):
@@ -109,6 +128,20 @@ def solve_queens(initial_board):
                 return(s)
             fringe.append(s)
     return False
+    
+def solve_queens_alt(initial_board):
+    fringe = [(initial_board,count_pieces(initial_board))]
+    # print(fringe)
+    while len(fringe) > 0:
+        next_board,pieces = fringe.pop()
+        for s in successors5_alt(next_board, pieces):
+            if is_goal(s):
+                return(s)
+            fringe.append((s,pieces+1))
+    return False
+    
+    
+    
 
 # Solve n-knights!
 def solve_knights(initial_board):
@@ -152,6 +185,8 @@ if ntype == "nrook":
     
 elif ntype == "nqueen":
     cProfile.run("solution = solve_queens(initial_board)")
+    cProfile.run("solution = solve_queens_alt(initial_board)")
+
     printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
     print (printable_queens_board(printable_solution) if solution else "Sorry, no solution found. :(")
     
