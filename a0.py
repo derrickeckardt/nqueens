@@ -7,6 +7,7 @@
 import sys
 from operator import add
 import cProfile
+import time
 
 # Count # of pieces in given row
 def count_on_row(board, row):
@@ -19,14 +20,13 @@ def count_on_col(board, col):
 # Count # of pieces in the diagonals from a particular spot on the board
 def count_on_diagonals(board,row,col):
     diags = 0
-    # Opportunity to streamline code in future below
     for colpos in range(col-1,-1,-1):
-        for rowpos in range(row+colpos-col,row+colpos-col-1,-1):
-            if rowpos >= 0 and board[rowpos][colpos]==1:
-                diags += board[rowpos][colpos] 
-        for rowpos in range(row-colpos+col,row-colpos+col+1):
-            if rowpos <= N-1 and board[rowpos][colpos]==1:
-                diags += board[rowpos][colpos]
+        rowpos = row+colpos-col
+        if rowpos >= 0 and board[rowpos][colpos]==1:
+            diags += board[rowpos][colpos] 
+        rowpos = row-colpos+col
+        if rowpos <= N-1 and board[rowpos][colpos]==1:
+            diags += board[rowpos][colpos]
     return diags
 
 # Count number of piece in L-shapes that could attack another knight
