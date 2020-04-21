@@ -84,53 +84,33 @@ def successors6(board, total_pieces):
     else:
         return[]
 
+def successors(board, total_pieces, ntype):
+    if total_pieces < N and ntype == "nrook":
+        return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and blocked_board[r][total_pieces] != 2]
+    elif total_pieces < N and ntype == "nqueen":
+        return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and count_on_diagonals(board,r,total_pieces)==0 and blocked_board[r][total_pieces] != 2]
+    elif total_pieces < N and ntype == "nknight":
+        return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_els(board,r,total_pieces) == 0 and blocked_board[r][total_pieces] != 2]
+    else:
+        return[]
+
+
 # check if board is a goal state
 def is_goal(board):
     return count_pieces(board) == N and \
         all( [ count_on_row(board, r) <= 1 for r in range(0, N) ] ) and \
         all( [ count_on_col(board, c) <= 1 for c in range(0, N) ] )
 
-# Solve n-rooks!
-def solve_rooks(initial_board):
-    fringe = [initial_board]
-    while len(fringe) > 0:
-        for s in successors4( fringe.pop() ):
-            if is_goal(s):
-                return(s)
-            fringe.append(s)
-    return False
-
-# Solve n-queens!
-def solve_queens(initial_board):
+# Find solution board
+def solve_board(initial_board, ntype):
     fringe = [(initial_board,count_pieces(initial_board))]
     # print(fringe)
     while len(fringe) > 0:
         next_board,pieces = fringe.pop()
-        for s in successors5(next_board, pieces):
-            if is_goal(s):
-                return(s)
-            fringe.append((s,pieces+1))
-    return False
-    
-# Solve n-knights!
-def solve_knights(initial_board):
-    fringe = [initial_board]
-    while len(fringe) > 0:
-        for s in successors6( fringe.pop() ):
-            if is_goal(s):
-                return(s)
-            fringe.append(s)
-    return False
-
-def solve_board(initial_board):
-    fringe = [(initial_board,count_pieces(initial_board))]
-    # print(fringe)
-    while len(fringe) > 0:
-        next_board,pieces = fringe.pop()
-        all_successors = successors4(next_board,pieces) if ntype == "nrook" else successors5(next_board,pieces) if ntype == "nqueen" else successors6(next_board,pieces)
+        # all_successors = successors4(next_board,pieces) if ntype == "nrook" else successors5(next_board,pieces) if ntype == "nqueen" else successors6(next_board,pieces)
+        all_successors = successors(next_board,pieces, ntype)
         for s in all_successors:
             if is_goal(s):
-                print(s)
                 return(s)
             fringe.append((s,pieces+1))
     return False
@@ -156,7 +136,6 @@ if total_blocked > 0:
         blockedcol = int(sys.argv[blocked+1]) -1
         blocked_board = block_spot(blocked_board,blockedrow,blockedcol)
 
-
-cProfile.run("solution = solve_board(initial_board)")
+cProfile.run("solution = solve_board(initial_board, ntype)")
 printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
 print (printable_board(printable_solution, ntype) if solution else "Sorry, no solution found. :(")
