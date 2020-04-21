@@ -47,14 +47,9 @@ def count_pieces(board):
     return [ row.count(1) for row in board ].count(1)
 
 # Return a string with the board rendered in a human-friendly format
-def printable_rooks_board(board):
-    return "\n".join([ " ".join([ "R" if col==1 else "X" if col==2 else "_" for col in row ]) for row in board])
-
-def printable_queens_board(board):
-    return "\n".join([ " ".join([ "Q" if col==1 else "X" if col==2 else "_" for col in row ]) for row in board])
-
-def printable_knights_board(board):
-    return "\n".join([ " ".join([ "K" if col==1 else "X" if col==2 else "_" for col in row ]) for row in board])
+def printable_board(board, ntype):
+    piece_used = "R" if ntype == "nrook" else "Q" if ntype == "nqueen" else "K" if ntype == "nknight" else "?"
+    return "\n".join([ " ".join([ piece_used if col==1 else "X" if col==2 else "_" for col in row ]) for row in board])
 
 # Add a piece to the board at the given position, and return a new board (doesn't change original)
 def add_piece(board, row, col):
@@ -135,6 +130,7 @@ def solve_board(initial_board):
         all_successors = successors4(next_board,pieces) if ntype == "nrook" else successors5(next_board,pieces) if ntype == "nqueen" else successors6(next_board,pieces)
         for s in all_successors:
             if is_goal(s):
+                print(s)
                 return(s)
             fringe.append((s,pieces+1))
     return False
@@ -160,21 +156,7 @@ if total_blocked > 0:
         blockedcol = int(sys.argv[blocked+1]) -1
         blocked_board = block_spot(blocked_board,blockedrow,blockedcol)
 
-if ntype == "nrook":
-    solution = solve_rooks(initial_board)
-    # zip solution and blocked board into one for display
-    printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
-    # Note: I learned how to add elements together from
-    # https://stackoverflow.com/questions/18713321/element-wise-addition-of-2-lists/18713494
-    # then I built on it since I needed to do list of list of addition
-    print (printable_rooks_board(printable_solution) if solution else "Sorry, no solution found. :(")
-    
-elif ntype == "nqueen":
-    cProfile.run("solution = solve_queens(initial_board)")
-    printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
-    print (printable_queens_board(printable_solution) if solution else "Sorry, no solution found. :(")
-    
-elif ntype == "nknight":
-    cProfile.run("solution = solve_board(initial_board)")
-    printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
-    print (printable_knights_board(printable_solution) if solution else "Sorry, no solution found. :(")
+
+cProfile.run("solution = solve_board(initial_board)")
+printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
+print (printable_board(printable_solution, ntype) if solution else "Sorry, no solution found. :(")
