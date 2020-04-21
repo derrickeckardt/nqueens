@@ -18,7 +18,6 @@ def count_on_row(board, row):
 def count_on_col(board, col):
     return sum( [ row[col] for row in board ] ) 
 
-    
 # Count # of pieces in the diagonals from a particular spot on the board
 def count_on_diagonals(board,row,col):
     diags = 0
@@ -47,7 +46,6 @@ def count_pieces(board):
     # return sum([ sum(row) for row in board ] )
     return [ row.count(1) for row in board ].count(1)
 
-
 # Return a string with the board rendered in a human-friendly format
 def printable_rooks_board(board):
     return "\n".join([ " ".join([ "R" if col==1 else "X" if col==2 else "_" for col in row ]) for row in board])
@@ -68,42 +66,24 @@ def block_spot(board, row, col):
 
 # Get list of successors of given board state
 # NRooks Successor
-def successors4(board):
-    total_pieces = count_pieces(board)
+def successors4(board, total_pieces):
+    # total_pieces = count_pieces(board)
     if total_pieces < N:
         return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and blocked_board[r][total_pieces] != 2]
     else:
         return[]
-# NQueens Successor
-def successors5(board):
-    total_pieces = count_pieces(board)
-    range_0_N = range(0,N)
-    if total_pieces < N:
-        return [add_piece(board, r, total_pieces) for r in range_0_N if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and count_on_diagonals(board,r,total_pieces)==0 and blocked_board[r][total_pieces] != 2]
-        # new_board_counts = [count_pieces(board) for board in new_boards]
-        # print(new_board_counts)
-        # return new_boards
-
-    else:
-        return[]
 
 # NQueens Successor
-def successors5_alt(board,total_pieces):
+def successors5(board,total_pieces):
     # total_pieces = count_pieces(board)
-
     if total_pieces < N:
         return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and count_on_diagonals(board,r,total_pieces)==0 and blocked_board[r][total_pieces] != 2]
-        # new_board_counts = [count_pieces(board) for board in new_boards]
-        # print(new_board_counts)
-        # return new_boards
-
     else:
         return[]
 
-
 # NKnights Successor
-def successors6(board):
-    total_pieces = count_pieces(board)
+def successors6(board, total_pieces):
+    # total_pieces = count_pieces(board)
     if total_pieces < N:
         return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_els(board,r,total_pieces) == 0 and blocked_board[r][total_pieces] != 2]
     else:
@@ -127,28 +107,16 @@ def solve_rooks(initial_board):
 
 # Solve n-queens!
 def solve_queens(initial_board):
-    fringe = [initial_board]
-    while len(fringe) > 0:
-        for s in successors5( fringe.pop() ):
-            if is_goal(s):
-                return(s)
-            fringe.append(s)
-    return False
-    
-def solve_queens_alt(initial_board):
     fringe = [(initial_board,count_pieces(initial_board))]
     # print(fringe)
     while len(fringe) > 0:
         next_board,pieces = fringe.pop()
-        for s in successors5_alt(next_board, pieces):
+        for s in successors5(next_board, pieces):
             if is_goal(s):
                 return(s)
             fringe.append((s,pieces+1))
     return False
     
-    
-    
-
 # Solve n-knights!
 def solve_knights(initial_board):
     fringe = [initial_board]
@@ -157,6 +125,18 @@ def solve_knights(initial_board):
             if is_goal(s):
                 return(s)
             fringe.append(s)
+    return False
+
+def solve_board(initial_board):
+    fringe = [(initial_board,count_pieces(initial_board))]
+    # print(fringe)
+    while len(fringe) > 0:
+        next_board,pieces = fringe.pop()
+        all_successors = successors4(next_board,pieces) if ntype == "nrook" else successors5(next_board,pieces) if ntype == "nqueen" else successors6(next_board,pieces)
+        for s in all_successors:
+            if is_goal(s):
+                return(s)
+            fringe.append((s,pieces+1))
     return False
 
 # This will tell us whether to run nrook or nqueen or nknight.   It is passed through command line arguments
@@ -190,13 +170,11 @@ if ntype == "nrook":
     print (printable_rooks_board(printable_solution) if solution else "Sorry, no solution found. :(")
     
 elif ntype == "nqueen":
-    # cProfile.run("solution = solve_queens(initial_board)")
-    cProfile.run("solution = solve_queens_alt(initial_board)")
-
+    cProfile.run("solution = solve_queens(initial_board)")
     printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
     print (printable_queens_board(printable_solution) if solution else "Sorry, no solution found. :(")
     
 elif ntype == "nknight":
-    solution = solve_knights(initial_board)
+    cProfile.run("solution = solve_board(initial_board)")
     printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
     print (printable_knights_board(printable_solution) if solution else "Sorry, no solution found. :(")
