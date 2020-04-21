@@ -36,14 +36,11 @@ def count_on_els(board,row,col):
     # Opportunity to streamline code in future below
     rowpos = [row-2,row-1,row+1,row+2]
     colpos = [col-1,col-2,col-2,col-1]
-    els = sum([board[rowpos[x]][colpos[x]] for x in range(0,4) if rowpos[x] >=0 and rowpos[x] <= N-1 and colpos[x] >=0 and colpos[x] <= N-1])
+    els = sum([board[rowpos[x]][colpos[x]] for x in [0,1,2,3] if rowpos[x] >=0 and rowpos[x] <= N-1 and colpos[x] >=0 and colpos[x] <= N-1])
     return els
 
 # Count total # of pieces on board
 def count_pieces(board):
-    # print(sum(board))
-    # print([ sum(row) for row in board ])
-    # return sum([ sum(row) for row in board ] )
     return [ row.count(1) for row in board ].count(1)
 
 # Return a string with the board rendered in a human-friendly format
@@ -60,30 +57,6 @@ def block_spot(board, row, col):
     return board[0:row] + [board[row][0:col] + [2,] + board[row][col+1:]] + board[row+1:]
 
 # Get list of successors of given board state
-# NRooks Successor
-def successors4(board, total_pieces):
-    # total_pieces = count_pieces(board)
-    if total_pieces < N:
-        return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and blocked_board[r][total_pieces] != 2]
-    else:
-        return[]
-
-# NQueens Successor
-def successors5(board,total_pieces):
-    # total_pieces = count_pieces(board)
-    if total_pieces < N:
-        return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and count_on_diagonals(board,r,total_pieces)==0 and blocked_board[r][total_pieces] != 2]
-    else:
-        return[]
-
-# NKnights Successor
-def successors6(board, total_pieces):
-    # total_pieces = count_pieces(board)
-    if total_pieces < N:
-        return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_els(board,r,total_pieces) == 0 and blocked_board[r][total_pieces] != 2]
-    else:
-        return[]
-
 def successors(board, total_pieces, ntype):
     if total_pieces < N and ntype == "nrook":
         return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and blocked_board[r][total_pieces] != 2]
@@ -93,7 +66,6 @@ def successors(board, total_pieces, ntype):
         return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_els(board,r,total_pieces) == 0 and blocked_board[r][total_pieces] != 2]
     else:
         return[]
-
 
 # check if board is a goal state
 def is_goal(board):
@@ -107,7 +79,6 @@ def solve_board(initial_board, ntype):
     # print(fringe)
     while len(fringe) > 0:
         next_board,pieces = fringe.pop()
-        # all_successors = successors4(next_board,pieces) if ntype == "nrook" else successors5(next_board,pieces) if ntype == "nqueen" else successors6(next_board,pieces)
         all_successors = successors(next_board,pieces, ntype)
         for s in all_successors:
             if is_goal(s):
