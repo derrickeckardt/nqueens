@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # a0.py : Solve the N-Rooks, N-Queens, N-Knights problem!
 # Started by D. Crandall, 2016
 # Updated by Zehua Zhang, 2017
@@ -14,12 +14,16 @@ import time
 # converted to dict
 # Count # of pieces in given row
 def count_on_row(board, row):
-    return sum(board[row].values()) 
+    count = sum(board[row].values())  
+    print("row count", count)
+    return count
 
 # converted to dict
 # Count # of pieces in given column
 def count_on_col(board, col):
-    return sum( [ row[col] for row in board.values() ] ) 
+    count = sum( [ row[col] for row in board.values() ] ) 
+    print("column count", count)
+    return count
 
 # converted to dict
 # Count # of pieces in the diagonals from a particular spot on the board
@@ -48,21 +52,29 @@ def count_on_els(board,row,col):
             return 1
     return 0 # els
 
+# converted to dict
 # Count total # of pieces on board
 def count_pieces(board):
-    return [ row.count(1) for row in board ].count(1)
+    count = 0
+    for row in board.values():
+        count += sum(row.values())
+    return count
 
+# converted to dict
 # Return a string with the board rendered in a human-friendly format
 def printable_board(board, ntype):
     piece_used = "R" if ntype == "nrook" else "Q" if ntype == "nqueen" else "K" if ntype == "nknight" else "?"
-    return "\n".join([ " ".join([ piece_used if col==1 else "X" if col==2 else "_" for col in row ]) for row in board])
+    return "\n".join([ " ".join([ piece_used if col==1 else "X" if col==2 else "_" for col in row.values() ]) for row in board.values()])
 
+# converted to dict
 # Add a piece to the board at the given position, and return a new board (doesn't change original)
 def add_piece(board, row, col):
-    return board[0:row] + [board[row][0:col] + [1,] + board[row][col+1:]] + board[row+1:]
+    board[row][col] = 1
+    return board
 
-# Don't blockspot in this version
+# Don't need a blockspot fucntion in this version
 
+# converted to dict
 # Get list of successors of given board state
 def successors(board, total_pieces, ntype):
     if total_pieces < N and ntype == "nrook":
@@ -74,32 +86,38 @@ def successors(board, total_pieces, ntype):
     else:
         return[]
 
+# converted to dict
 # check if board is a goal state
 def is_goal(board):
     return count_pieces(board) == N and \
         all( [ count_on_row(board, r) <= 1 for r in range(0, N) ] ) and \
         all( [ count_on_col(board, c) <= 1 for c in range(0, N) ] )
 
+# converted to dict
 # Find solution board
 def solve_board(initial_board, ntype):
     fringe = [(initial_board,count_pieces(initial_board))]
     # print(fringe)
     while len(fringe) > 0:
         next_board,pieces = fringe.pop()
+        print(next_board)
         all_successors = successors(next_board,pieces, ntype)
         for s in all_successors:
+            print("   ",s)
+
             if pieces+1 == N:
                 if is_goal(s):
                     return(s)
             fringe.append((s,pieces+1))
     return False
 
+# added for dict
 def generate_blank_board(N):
     board = {}
     for i in range(N):
         board[i] = {}
         for j in range (N):
-            board[i][j] = {}
+            board[i][j] = 0
     return board
 
 # This will tell us whether to run nrook or nqueen or nknight.   It is passed through command line arguments
@@ -124,5 +142,6 @@ if total_blocked > 0:
         blocked_board[blockedrow][blockedcol] = 2
 
 cProfile.run("solution = solve_board(initial_board, ntype)")
-printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
+print(solution)
+# printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
 print (printable_board(printable_solution, ntype) if solution else "Sorry, no solution found. :(")
