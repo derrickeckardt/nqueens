@@ -10,19 +10,20 @@ import sys
 from operator import add
 import cProfile
 import time
+from copy import deepcopy
 
 # converted to dict
 # Count # of pieces in given row
 def count_on_row(board, row):
     count = sum(board[row].values())  
-    print("row count", count)
+    # print("row count", count)
     return count
 
 # converted to dict
 # Count # of pieces in given column
 def count_on_col(board, col):
     count = sum( [ row[col] for row in board.values() ] ) 
-    print("column count", count)
+    # print("column count", count)
     return count
 
 # converted to dict
@@ -69,8 +70,15 @@ def printable_board(board, ntype):
 # converted to dict
 # Add a piece to the board at the given position, and return a new board (doesn't change original)
 def add_piece(board, row, col):
-    board[row][col] = 1
-    return board
+    # new_board = deepcopy(board)
+    new_board = {}
+    for i in range(N):
+        new_board[i] = {}
+        for j in range(N):
+            new_board[i][j] = board[i][j]    
+    # new_board =  {key:values for (key,values) in board.items()}
+    new_board[row][col] = 1
+    return new_board
 
 # Don't need a blockspot fucntion in this version
 
@@ -80,7 +88,8 @@ def successors(board, total_pieces, ntype):
     if total_pieces < N and ntype == "nrook":
         return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and blocked_board[r][total_pieces] != 2]
     elif total_pieces < N and ntype == "nqueen":
-        return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_row(board,r)==0 and count_on_diagonals(board,r,total_pieces)==0 and blocked_board[r][total_pieces] != 2]
+        return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and  count_on_row(board,r)==0 and count_on_diagonals(board,r,total_pieces)==0 and blocked_board[r][total_pieces] != 2]
+
     elif total_pieces < N and ntype == "nknight":
         return [add_piece(board, r, total_pieces) for r in range(0, N) if board[r][total_pieces] != 1 and count_on_els(board,r,total_pieces) == 0 and blocked_board[r][total_pieces] != 2]
     else:
@@ -100,10 +109,12 @@ def solve_board(initial_board, ntype):
     # print(fringe)
     while len(fringe) > 0:
         next_board,pieces = fringe.pop()
-        print(next_board)
+        # print(next_board)
         all_successors = successors(next_board,pieces, ntype)
+        # print(len(all_successors))
         for s in all_successors:
-            print("   ",s)
+            # print("--------------------------")
+            # print(printable_board(s,ntype))
 
             if pieces+1 == N:
                 if is_goal(s):
@@ -142,6 +153,10 @@ if total_blocked > 0:
         blocked_board[blockedrow][blockedcol] = 2
 
 cProfile.run("solution = solve_board(initial_board, ntype)")
-print(solution)
-# printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
+printable_solution = {}
+if solution:
+    for i in range(N):
+        printable_solution[i] = {}
+        for j in range(N):
+            printable_solution[i][j] = solution[i][j] + blocked_board[i][j]
 print (printable_board(printable_solution, ntype) if solution else "Sorry, no solution found. :(")
