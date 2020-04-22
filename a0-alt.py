@@ -10,6 +10,7 @@ import sys
 from operator import add
 import cProfile
 import time
+import copy
 from copy import deepcopy
 
 # converted to dict
@@ -71,9 +72,11 @@ def printable_board(board, ntype):
 # Add a piece to the board at the given position, and return a new board (doesn't change original)
 def add_piece(board, row, col):
     # new_board = deepcopy(board)
+    # new_board = copy.copy(board)
+    # new_board = board.copy()
     new_board = {}
     for i in range(N):
-        new_board[i] = {}
+        new_board[i] = {} #board[i] # {}
         for j in range(N):
             new_board[i][j] = board[i][j]    
     # new_board =  {key:values for (key,values) in board.items()}
