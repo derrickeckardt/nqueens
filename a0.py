@@ -24,11 +24,11 @@ def count_on_diagonals(board,row,col):
     for colpos in range(col-1,-1,-1):
         rowpos = row+colpos-col
         if rowpos >= 0 and board[rowpos][colpos]==1:
-            diags += board[rowpos][colpos] 
+            return 1 # diags += board[rowpos][colpos] 
         rowpos = row-colpos+col
         if rowpos <= N-1 and board[rowpos][colpos]==1:
-            diags += board[rowpos][colpos]
-    return diags
+            return 1 #diags += board[rowpos][colpos]
+    return 0
 
 # Count number of piece in L-shapes that could attack another knight
 def count_on_els(board,row,col):
@@ -36,8 +36,12 @@ def count_on_els(board,row,col):
     # Opportunity to streamline code in future below
     rowpos = [row-2,row-1,row+1,row+2]
     colpos = [col-1,col-2,col-2,col-1]
-    els = sum([board[rowpos[x]][colpos[x]] for x in [0,1,2,3] if rowpos[x] >=0 and rowpos[x] <= N-1 and colpos[x] >=0 and colpos[x] <= N-1])
-    return els
+    # els = sum([board[rowpos[x]][colpos[x]] for x in [0,1,2,3] if rowpos[x] >=0 and rowpos[x] <= N-1 and colpos[x] >=0 and colpos[x] <= N-1])
+    for x in [0,1,2,3]:
+        if rowpos[x] >=0 and rowpos[x] <= N-1 and colpos[x] >=0 and colpos[x] <= N-1 and board[rowpos[x]][colpos[x]] == 1:
+            # els += board[rowpos[x]][colpos[x]]
+            return 1
+    return 0 # els
 
 # Count total # of pieces on board
 def count_pieces(board):
@@ -81,8 +85,9 @@ def solve_board(initial_board, ntype):
         next_board,pieces = fringe.pop()
         all_successors = successors(next_board,pieces, ntype)
         for s in all_successors:
-            if is_goal(s):
-                return(s)
+            if pieces+1 == N:
+                if is_goal(s):
+                    return(s)
             fringe.append((s,pieces+1))
     return False
 
