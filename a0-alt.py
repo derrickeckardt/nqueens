@@ -76,9 +76,10 @@ def add_piece(board, row, col):
     # new_board = board.copy()
     new_board = {}
     for i in range(N):
-        new_board[i] = {} #board[i] # {}
-        for j in range(N):
-            new_board[i][j] = board[i][j]    
+        # new_board[i] = {}
+        new_board[i] = board[i].copy() # {}
+        # for j in range(N):
+        #     new_board[i][j] = board[i][j]    
     # new_board =  {key:values for (key,values) in board.items()}
     new_board[row][col] = 1
     return new_board
