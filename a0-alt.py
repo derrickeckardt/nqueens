@@ -71,6 +71,7 @@ def printable_board(board, ntype):
 # converted to dict
 # Add a piece to the board at the given position, and return a new board (doesn't change original)
 def add_piece(board, row, col):
+    new_board = {}
     for i in range(N):
         # new_board[i] = {}
         new_board[i] = board[i].copy() # {}
