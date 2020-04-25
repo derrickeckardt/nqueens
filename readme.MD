@@ -8,4 +8,10 @@ The user also has the option to select squares on the board that are blocked, i.
 
 To run:
 
-    ./a0.py piece no_blocked_pieces
+    ./a0.py piece board_size blocked_squares x1 y1 ... xn yn
+    
+where:
+- *piece* is either "nrook", "nqueen", or "nknight".
+- *board_size* is how many pieces are placed on the board
+- *blocked_squares* is the number of blocked_squares
+- *x1* and *y1* are option arguments, are the x,y coordinates of first blocked square, which continues all the way until xn,yn coordinates of the final blocked square.
