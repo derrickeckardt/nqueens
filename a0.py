@@ -112,6 +112,7 @@ if total_blocked > 0:
         blockedcol = int(sys.argv[blocked+1]) -1
         blocked_board = block_spot(blocked_board,blockedrow,blockedcol)
 
-cProfile.run("solution = solve_board(initial_board, ntype)")
+# For testing - cProfile.run("solution = solve_board(initial_board, ntype)")
+solution = solve_board(initial_board, ntype)
 printable_solution = list( map(add, solution[r], blocked_board[r]) for r in range(0,N) ) 
 print (printable_board(printable_solution, ntype) if solution else "Sorry, no solution found. :(")

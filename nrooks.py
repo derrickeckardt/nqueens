@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # nrooks.py : Solve the N-Rooks problem!
 # D. Crandall, 2016
 # Updated by Zehua Zhang, 2017
