@@ -17,11 +17,6 @@ where:
 - *x1* and *y1* are option arguments, are the x,y coordinates of first blocked square, which continues all the way until xn,yn coordinates of the final blocked square.
 - 
 
-
-Derrick Eckardt September 9, 2018
-
-CSCI-B551 Elements of AI Assignment 0
-
 ### Question 1
 
 The abstraction that nrooks-2.py is using can be defined according to the five parameters we learned about in lecture.
