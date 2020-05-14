@@ -15,19 +15,17 @@ where:
 - *board_size* is how many pieces are placed on the board
 - *blocked_squares* is the number of blocked_squares
 - *x1* and *y1* are option arguments, are the x,y coordinates of first blocked square, which continues all the way until xn,yn coordinates of the final blocked square.
-- 
 
-### Question 1
 
-The abstraction that nrooks-2.py is using can be defined according to the five parameters we learned about in lecture.
+## Defining the Problem Space
 
-The **set of valid states** is all the chess boards that have between 0 and N rooks.
+The **set of valid states** is all the chess boards that have between 0 and N pieces.
 
-Our **successor function** is adding one additional rook to the board compared to the previous board.
+Our **successor function** is adding one additional piece to the board compared to the previous board.
 
 The **cost function** is the number of moves, which in this case, is irrelevant. Every move costs the same.
 
-Our **goal state** is defined as an NxN board, which has N rooks on it, where no rook is in danger from another rook of being eaten.
+Our **goal state** is defined as an NxN board, which has N pieces on it, where no piece is in danger from another piece of being eaten.
 
 The **Initial state** is an empty board that is N x N chessboard, where N is provided by the user at runtime.
 
