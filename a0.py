@@ -3,6 +3,7 @@
 # Started by D. Crandall, 2016
 # Updated by Zehua Zhang, 2017
 # Updated again for homework by Derrick Eckardt in 2018.
+# Refactored in 2020.
 
 import sys
 from operator import add
