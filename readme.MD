@@ -44,3 +44,5 @@ In reading the python documentation on [Data Structures](https://docs.python.org
 ## Describe Successor Functions
 
 ## Blocking Pieces
+
+To block a piece from being used, the user enters those on the command line, in terms of x,y coordinates.  Then, the program creates a blank board for just blocks.  The blocked squares are then added to this board.  Then, when a new piece is considered, this blocked board is consulated to determine if that square has been deemed off-limits.
